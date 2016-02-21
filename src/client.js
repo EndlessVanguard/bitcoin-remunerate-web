@@ -23,12 +23,12 @@ function remunerate(apiToken, contentId) {
       domID = domID || 'remunerate-content';
 
       // TODO: we should create DOM nodes
-      document.getElementById(domID).innerHTML(html);
+      document.getElementById(domID).innerHTML = html;
     }
 
     function displayPrompt (key) {
       return render("Please pay 1 satoshi to " + key +
-      "\n<a href='bitcoin:"
+      "<a href='bitcoin:"
       + key + "'>click me to pay</a>");
     }
 
@@ -42,27 +42,64 @@ function remunerate(apiToken, contentId) {
     };
   })();
 
+  var api = (function() {
+    function apiUrl(contentId, key){
+      var url = 'http://localhost:3000/'+ contentId;
+
+console.log(key);
+      if(key !== null) {
+        url += '?key=' + key;
+      }
+
+      return url;
+    }
+
+    function get(apiToken, contentId, key, cb) {
+      var req = new XMLHttpRequest();
+
+      req.onreadystatechange = function() {
+        // If we've received the data
+        if (req.readyState === 4) {
+          cb(req.status, req.responseText);
+        }
+
+      };
+
+      req.open('GET', apiUrl(contentId, key));
+      req.send();
+    };
+
+    return {
+      get: get,
+    };
+
+  })();
+
   var getContent = function() {
     if(contentResolved) {
       return;
     }
 
     // check localStorage for address
-    var key = storage.get(contentId);
+    var key = storage.getKey(contentId);
 
     // ask api for content
-    api.get(apiToken, contentId, key)
-      .then(function(res) {
-        if(res.data.content) {
-          contentResolved = true;
-          view.displayContent(res.data.content);
-        } else {
-          storage.setKey(contentId, res.data.key);
-          view.displayPrompt(res.data.display, res.data.key);
+    api.get(apiToken, contentId, key, function(resStatus, resData) {
+      if(resStatus === 200) {
+        contentResolved = true;
+        view.displayContent(resData);
+      } else if(resStatus === 402) {
+        var jsonData = JSON.parse(resData);
 
-          setTimeout(getContent, 2000);
-        }
-      });
+        storage.setKey(contentId, jsonData.key);
+        view.displayPrompt(jsonData.display, jsonData.key);
+
+        // TODO: better mechanism to do long polling
+        setTimeout(getContent, 2000);
+      } else {
+        console.log('bad tings mon');
+      }
+    })
   }.bind(this);
 
   // return {
