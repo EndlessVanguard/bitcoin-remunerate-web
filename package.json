@@ -1,0 +1,14 @@
+{
+  "name": "bitcoin-remunerate-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "uglifyjs src/client.js --compress --mangle -o dist/client.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "uglify-js": "^2.6.1"
+  }
+}
