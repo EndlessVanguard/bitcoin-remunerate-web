@@ -1,109 +1,106 @@
-function remunerate(apiToken, contentId) {
-  var contentResolved = false;
+/* global localStorage:false, XMLHttpRequest:false */
 
-  var storage = (function() {
-    var prefix = 'remunerate:content:';
+function remunerate (apiToken, contentId) {
+  var contentResolved = false
 
-    function storageId(contentId) {
-      return prefix+contentId;
+  var storage = (function () {
+    var prefix = 'remunerate:content:'
+
+    function storageId (contentId) {
+      return prefix + contentId
     }
 
     return {
-      getKey: function(contentId) {
-        return localStorage.getItem(storageId(contentId));
+      getKey: function (contentId) {
+        return localStorage.getItem(storageId(contentId))
       },
-      setKey: function(contentId, key) {
-        localStorage.setItem(storageId(contentId), key);
-      },
-    };
-  })();
+      setKey: function (contentId, key) {
+        localStorage.setItem(storageId(contentId), key)
+      }
+    }
+  })()
 
-  var view = (function() {
-    function render(html, domID) {
-      domID = domID || 'remunerate-content';
+  var view = (function () {
+    function render (html, domID) {
+      domID = domID || 'remunerate-content'
 
-      // TODO: we should create DOM nodes
-      document.getElementById(domID).innerHTML = html;
+      document.getElementById(domID).innerHTML = html
     }
 
     function displayPrompt (key) {
-      return render("Please pay 1 satoshi to " + key +
-      "<a href='bitcoin:"
-      + key + "'>click me to pay</a>");
+      return render('Please pay 1 satoshi to ' + key +
+                    '<a href="bitcoin:' + key + '">click me to pay</a>')
     }
 
-    function displayContent(content) {
-      return render(content);
+    function displayContent (content) {
+      return render(content)
     }
 
     return {
       displayPrompt: displayPrompt,
-      displayContent: displayContent,
-    };
-  })();
+      displayContent: displayContent
+    }
+  })()
 
-  var api = (function() {
-    function apiUrl(contentId, key){
-      var url = 'http://localhost:3000/'+ contentId;
+  var api = (function () {
+    function apiUrl (contentId, key) {
+      var url = 'http://localhost:3000/' + contentId
 
-console.log(key);
-      if(key !== null) {
-        url += '?key=' + key;
+      if (key !== null) {
+        url += '?key=' + key
       }
 
-      return url;
+      return url
     }
 
-    function get(apiToken, contentId, key, cb) {
-      var req = new XMLHttpRequest();
+    function get (apiToken, contentId, key, cb) {
+      var req = new XMLHttpRequest()
 
-      req.onreadystatechange = function() {
+      req.onreadystatechange = function () {
         // If we've received the data
         if (req.readyState === 4) {
-          cb(req.status, req.responseText);
+          cb(req.status, req.responseText)
         }
+      }
 
-      };
-
-      req.open('GET', apiUrl(contentId, key));
-      req.send();
-    };
+      req.open('GET', apiUrl(contentId, key))
+      req.send()
+    }
 
     return {
-      get: get,
-    };
+      get: get
+    }
+  })()
 
-  })();
-
-  var getContent = function() {
-    if(contentResolved) {
-      return;
+  var unboundGetContent = function () {
+    if (contentResolved) {
+      return
     }
 
     // check localStorage for address
-    var key = storage.getKey(contentId);
+    var key = storage.getKey(contentId)
 
     // ask api for content
-    api.get(apiToken, contentId, key, function(resStatus, resData) {
-      if(resStatus === 200) {
-        contentResolved = true;
-        view.displayContent(resData);
-      } else if(resStatus === 402) {
-        var jsonData = JSON.parse(resData);
+    api.get(apiToken, contentId, key, function (resStatus, resData) {
+      if (resStatus === 200) {
+        contentResolved = true
+        view.displayContent(resData)
+      } else if (resStatus === 402) {
+        var jsonData = JSON.parse(resData)
 
-        storage.setKey(contentId, jsonData.key);
-        view.displayPrompt(jsonData.display, jsonData.key);
+        storage.setKey(contentId, jsonData.key)
+        view.displayPrompt(jsonData.display, jsonData.key)
 
         // TODO: better mechanism to do long polling
-        setTimeout(getContent, 2000);
+        setTimeout(getContent, 2000)
       } else {
-        console.log('bad tings mon');
+        console.log('bad tings mon')
       }
     })
-  }.bind(this);
+  }
+  var getContent = unboundGetContent.bind(this)
 
-  // return {
-  //   getContent: getContent,
-  // };
-  getContent();
+  getContent()
 }
+
+window.remunerate = remunerate

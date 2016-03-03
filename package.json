@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "uglifyjs src/client.js --compress --mangle -o dist/client.js"
+    "build": "standard && uglifyjs src/client.js --compress --mangle -o dist/client.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "standard": "^6.0.7",
     "uglify-js": "^2.6.1"
   }
 }
