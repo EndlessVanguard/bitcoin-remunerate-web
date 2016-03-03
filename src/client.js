@@ -1,5 +1,4 @@
 /* global localStorage:false, XMLHttpRequest:false */
-
 function remunerate (apiToken, contentId) {
   var contentResolved = false
 
@@ -28,8 +27,8 @@ function remunerate (apiToken, contentId) {
     }
 
     function displayPrompt (key) {
-      return render('Please pay 1 satoshi to ' + key +
-                    '<a href="bitcoin:' + key + '">click me to pay</a>')
+      return render('Please pay 1 satoshi to ' +
+                    '<a href="bitcoin:' + key + '">' + key + '</a>')
     }
 
     function displayContent (content) {
@@ -89,10 +88,9 @@ function remunerate (apiToken, contentId) {
         var jsonData = JSON.parse(resData)
 
         storage.setKey(contentId, jsonData.key)
-        view.displayPrompt(jsonData.display, jsonData.key)
+        view.displayPrompt(jsonData.key)
 
-        // TODO: better mechanism to do long polling
-        setTimeout(getContent, 2000)
+        setTimeout(getContent, 2000) // TODO: better mechanism to do long polling
       } else {
         console.log('bad tings mon')
       }
@@ -102,5 +100,3 @@ function remunerate (apiToken, contentId) {
 
   getContent()
 }
-
-window.remunerate = remunerate
