@@ -10,11 +10,11 @@ function remunerate (apiToken, contentId) {
     }
 
     return {
-      getKey: function (contentId) {
+      getAddress: function (contentId) {
         return localStorage.getItem(storageId(contentId))
       },
-      setKey: function (contentId, key) {
-        localStorage.setItem(storageId(contentId), key)
+      setAddress: function (contentId, address) {
+        localStorage.setItem(storageId(contentId), address)
       }
     }
   })()
@@ -26,9 +26,9 @@ function remunerate (apiToken, contentId) {
       document.getElementById(domID).innerHTML = html
     }
 
-    function displayPrompt (key) {
+    function displayPrompt (address) {
       return render('Please pay 1 satoshi to ' +
-                    '<a href="bitcoin:' + key + '">' + key + '</a>')
+                    '<a href="bitcoin:' + address + '">' + address + '</a>')
     }
 
     function displayContent (content) {
@@ -42,17 +42,17 @@ function remunerate (apiToken, contentId) {
   })()
 
   var api = (function () {
-    function apiUrl (contentId, key) {
+    function apiUrl (contentId, address) {
       var url = 'http://localhost:3000/' + contentId
-
-      if (key !== null) {
-        url += '?key=' + key
+      console.log('we are about to add address', address, contentId)
+      if (address !== null) {
+        url += '?address=' + address
       }
 
       return url
     }
 
-    function get (apiToken, contentId, key, cb) {
+    function get (apiToken, contentId, address, cb) {
       var req = new XMLHttpRequest()
 
       req.onreadystatechange = function () {
@@ -62,7 +62,7 @@ function remunerate (apiToken, contentId) {
         }
       }
 
-      req.open('GET', apiUrl(contentId, key))
+      req.open('GET', apiUrl(contentId, address))
       req.send()
     }
 
@@ -77,18 +77,18 @@ function remunerate (apiToken, contentId) {
     }
 
     // check localStorage for address
-    var key = storage.getKey(contentId)
+    var address = storage.getAddress(contentId)
 
     // ask api for content
-    api.get(apiToken, contentId, key, function (resStatus, resData) {
+    api.get(apiToken, contentId, address, function (resStatus, resData) {
       if (resStatus === 200) {
         contentResolved = true
         view.displayContent(resData)
       } else if (resStatus === 402) {
         var jsonData = JSON.parse(resData)
 
-        storage.setKey(contentId, jsonData.key)
-        view.displayPrompt(jsonData.key)
+        storage.setAddress(contentId, jsonData.address)
+        view.displayPrompt(jsonData.address)
 
         setTimeout(getContent, 2000) // TODO: better mechanism to do long polling
       } else {
