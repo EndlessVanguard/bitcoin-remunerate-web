@@ -1,5 +1,5 @@
 /* global localStorage:false, XMLHttpRequest:false */
-function remunerate (apiToken, contentId) {
+function remunerate (contentId) {
   var contentResolved = false
 
   var storage = (function () {
@@ -52,7 +52,7 @@ function remunerate (apiToken, contentId) {
       return url
     }
 
-    function get (apiToken, contentId, address, cb) {
+    function get (contentId, address, cb) {
       var req = new XMLHttpRequest()
 
       req.onreadystatechange = function () {
@@ -80,7 +80,7 @@ function remunerate (apiToken, contentId) {
     var address = storage.getAddress(contentId)
 
     // ask api for content
-    api.get(apiToken, contentId, address, function (resStatus, resData) {
+    api.get(contentId, address, function (resStatus, resData) {
       if (resStatus === 200) {
         contentResolved = true
         view.displayContent(resData)
