@@ -43,8 +43,9 @@ function remunerate (contentId) {
 
   var api = (function () {
     function apiUrl (contentId, address) {
-      var url = 'http://localhost:3000/' + contentId
-      console.log('we are about to add address', address, contentId)
+      var apiVersion = 0
+      var url = 'http://localhost:3000/' + apiVersion + '/' + contentId
+
       if (address !== null) {
         url += '?address=' + address
       }
