@@ -26,9 +26,8 @@ function remunerate (contentId) {
       document.getElementById(domID).innerHTML = html
     }
 
-    function displayPrompt (address) {
-      return render('Please pay 1 satoshi to ' +
-                    '<a href="bitcoin:' + address + '">' + address + '</a>')
+    function displayPrompt (paymentData) {
+      return render('Please pay 1 satoshi to ' + '<a href="bitcoin:' + paymentData.address + '?amount=' + paymentData.satoshis + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + paymentData.address + '</a>')
     }
 
     function displayContent (content) {
@@ -89,7 +88,7 @@ function remunerate (contentId) {
         var jsonData = JSON.parse(resData)
 
         storage.setAddress(contentId, jsonData.address)
-        view.displayPrompt(jsonData.address)
+        view.displayPrompt(jsonData)
 
         setTimeout(getContent, 2000) // TODO: better mechanism to do long polling
       } else {
