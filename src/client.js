@@ -27,7 +27,7 @@ function remunerate (contentId) {
     }
 
     function displayPrompt (paymentData) {
-      return render('Please pay 1 satoshi to ' + '<a href="bitcoin:' + paymentData.address + '?amount=' + paymentData.satoshis + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + paymentData.address + '</a>')
+      return render('Please pay 1 satoshi to ' + '<a href="bitcoin:' + paymentData.address + '?amount=' + paymentData.satoshis + 'X0' + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + paymentData.address + '</a>')
     }
 
     function displayContent (content) {
