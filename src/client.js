@@ -44,7 +44,7 @@ function remunerate (contentId) {
   var api = (function () {
     function apiUrl (contentId, address) {
       var apiVersion = 0
-      var url = 'http://localhost:3000/' + apiVersion + '/' + contentId
+      var url = 'http://localhost:3000/' + apiVersion + '/content/' + contentId
 
       if (address !== null) {
         url += '?address=' + address
