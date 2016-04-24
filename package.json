@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "standard ; uglifyjs src/client.js --compress --mangle -o dist/client.js"
+    "build": "standard ; uglifyjs src/client.js --compress --mangle -o dist/client.js",
+    "devbuild": "sh ./script/devbuild.sh"
   },
   "author": "",
   "license": "ISC",
