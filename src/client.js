@@ -27,7 +27,8 @@ function remunerate (contentId) {
     }
 
     function displayPrompt (paymentData) {
-      return render('Please pay ' + paymentData.satoshis*10^8 + ' bitcoin to ' + '<a href="bitcoin:' + paymentData.address + '?amount=' + paymentData.satoshis + 'X0' + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + paymentData.address + '</a>')
+      var string = ('Please pay ' + (paymentData.satoshis * (10 ^ 8)).toString() + ' bitcoin to ' + '<a href="bitcoin:' + (paymentData.address).toString() + '?amount=' + (paymentData.satoshis).toString() + 'X0' + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + (paymentData.address).toString() + '</a>')
+      return render(string)
     }
 
     function displayContent (content) {
