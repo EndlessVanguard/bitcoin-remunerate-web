@@ -27,8 +27,10 @@ function remunerate (contentId) {
     }
 
     function displayPrompt (paymentData) {
-      var string = ('Please pay ' + (paymentData.satoshis / 100000000) + ' bitcoin to ' + '<a href="bitcoin:' + (paymentData.address).toString() + '?amount=' + (paymentData.satoshis / 100000000) + '&label=' + encodeURI('Momona: ' + paymentData.label) + '">' + (paymentData.address).toString() + '</a>')
-      return render(string)
+      var bitcoinURL = 'bitcoin:' + (paymentData.address).toString() + '?amount=' + (paymentData.satoshis / 1e8) + '&label=' + encodeURI('Momona: ' + paymentData.label) + (paymentData.address).toString()
+      var string = ('Please pay ' + (paymentData.satoshis / 1e8) + ' bitcoin to ' + (paymentData.address).toString())
+      var qrCodeString = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + bitcoinURL + '" alt="qr code"></img>'
+      return render('<a href="' + bitcoinURL + '">' + string + qrCodeString + '</a>')
     }
 
     function displayContent (content) {
