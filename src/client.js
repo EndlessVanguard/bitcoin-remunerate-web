@@ -20,6 +20,8 @@ function remunerate (contentId) {
   })()
 
   var view = (function () {
+    var lastPromptAddress = null
+
     function render (html, domID) {
       domID = domID || 'remunerate-content'
 
@@ -27,8 +29,12 @@ function remunerate (contentId) {
     }
 
     function displayPrompt (paymentData) {
-      var bitcoinURL = 'bitcoin:' + (paymentData.address).toString() + '?amount=' + (paymentData.satoshis / 1e8) + '&label=' + encodeURI('Momona: ' + paymentData.label) + (paymentData.address).toString()
-      var string = ('Please pay ' + (paymentData.satoshis / 1e8) + ' bitcoin to ' + (paymentData.address).toString())
+      // tracking lastPromptAddress to prevent flashing of QR code image
+      if (paymentData.address === lastPromptAddress) return
+      lastPromptAddress = paymentData.address
+
+      var bitcoinURL = 'bitcoin:' + (paymentData.address) + '?amount=' + (paymentData.satoshis / 1e8) + '&label=' + encodeURI('Momona: ' + paymentData.label) + (paymentData.address)
+      var string = 'Please pay ' + (paymentData.satoshis / 1e8) + ' bitcoin to ' + (paymentData.address)
       var qrCodeString = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + bitcoinURL + '" alt="qr code"></img>'
       return render('<a href="' + bitcoinURL + '">' + string + qrCodeString + '</a>')
     }
