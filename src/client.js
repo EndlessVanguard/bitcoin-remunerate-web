@@ -33,7 +33,7 @@ function remunerate (contentId) {
       if (paymentData.address === lastPromptAddress) return
       lastPromptAddress = paymentData.address
 
-      var bitcoinURL = 'bitcoin:' + (paymentData.address) + '?amount=' + (paymentData.satoshis / 1e8) + '&label=' + encodeURI('Momona: ' + paymentData.label) + (paymentData.address)
+      var bitcoinURL = 'bitcoin:' + (paymentData.address) + '?amount=' + (paymentData.satoshis / 1e8) + '&label=' + encodeURI('Momona: ' + paymentData.label) + ' ' + (paymentData.address)
       var string = 'Please pay ' + (paymentData.satoshis / 1e8) + ' bitcoin to ' + (paymentData.address)
       var qrCodeString = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + bitcoinURL + '" alt="qr code"></img>'
       return render('<a href="' + bitcoinURL + '">' + string + qrCodeString + '</a>')
